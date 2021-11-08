@@ -1,0 +1,13 @@
+numpy
+scikit-image
+scipy
+setuptools
+loguru
+omegaconf
+tqdm
+pandas
+pytorch-lightning
+jupyterlab
+torch
+setuptools
+seaborn

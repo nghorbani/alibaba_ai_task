@@ -1,0 +1,64 @@
+apo:
+  expr_id: ???
+  data_id: ???
+
+dirs:
+  work_base_dir: ??? #This is the main directory for newly produced data by APO
+  support_base_dir: ??? # This directory holds the body model, layouts, etc
+  work_dir: ${dirs.work_base_dir}/training_experiments/${apo.data_id}/${apo.expr_id}
+  log_dir: ${dirs.work_dir}/logs
+  log_fname: ${dirs.log_dir}/${apo.expr_id}_${apo.data_id}.log
+  cfg_fname: ${dirs.work_dir}/${apo.expr_id}_${apo.data_id}.yaml
+  dataset_dir: ${dirs.work_base_dir}/data/${apo.data_id}  # 30 FPS
+
+train_parms:
+  batch_size: ???
+
+  num_workers: 5 # Used for dataloader
+  loss_weights:
+    price: 1.
+
+  optimizer:
+    type: Adam
+    args:
+      lr: 0.001
+      weight_decay: 0.00005
+      betas: [ .9, .999 ]
+  lr_scheduler:
+    type: ReduceLROnPlateau
+    args:
+      #      metrics: val_loss
+      verbose: true
+      patience: 3
+  early_stopping:
+    monitor: val_loss
+    min_delta: 0.0
+    patience: 8
+    verbose: true
+    mode: min
+
+data_parms:
+  history_length: 7
+  future_length: 7
+
+model_parms:
+  num_attention_heads: 5
+  num_attention_layers: 3
+
+trainer:
+  num_gpus: 4
+  max_epochs: 200
+  fast_dev_run: false
+  distributed_backend: dp
+  resume_training_if_possible: false
+  resume_checkpoint_fname:
+  finetune_checkpoint_fname:
+  weights_summary: top
+  profiler:
+  num_sanity_val_steps: 2
+  deterministic: true
+  limit_train_batches: 1.0
+  limit_val_batches: 1.0
+  overfit_batches: 0.0
+  rnd_seed: 100
+  strategy: ddp
